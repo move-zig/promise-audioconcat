@@ -2,7 +2,8 @@
   "name": "promise-audioconcat",
   "version": "1.0.0",
   "description": "Concatenates multiple audio files using ffmpeg",
-  "main": "dist\\index.js",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "test": "jest",
     "build": "tsc --project tsconfig.build.json"
