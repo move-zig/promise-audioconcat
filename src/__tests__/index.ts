@@ -9,10 +9,15 @@ describe('audioconcat', () => {
   const input2 = path.resolve(__dirname, 'file_example_MP3_5MG.mp3');
   const invalidFile = path.resolve(__dirname, 'something_else.mp3');
   const output = path.resolve(__dirname, 'output.mp3');
+  const other1 = path.resolve(__dirname, 'other1.mp3');
+  const other2 = path.resolve(__dirname, 'other2.mp3');
+  const other3 = path.resolve(__dirname, 'other3.mp3');
 
   beforeEach(async () => {
-    if (fs.existsSync(output)) {
-      await fs.promises.unlink(output);
+    for (const file of [ output, other1, other2, other3 ]) {
+      if (fs.existsSync(file)) {
+        await fs.promises.unlink(file);
+      }
     }
   });
 
@@ -35,5 +40,19 @@ describe('audioconcat', () => {
   it('should reject if an invalid output is specified', async () => {
     await expect(audioconcat([ input1, input2 ], 'z')).rejects.toThrow();
     expect(fs.existsSync(output)).toBe(false);
+  });
+
+  it('should work when called multiple times at once', async () => {
+    await expect(Promise.all([
+      audioconcat([ input1, input2 ], output),
+      audioconcat([ input1, input2, input2, input2 ], other1),
+      audioconcat([ input1, input2, input2, input2, input2, input1, input1, input2 ], other2),
+      audioconcat([ input1, input2, input1, input2, input1, input2 ], other3),
+    ])).resolves.toBeTruthy();
+
+    expect(fs.existsSync(output)).toBe(true);
+    expect(fs.existsSync(other1)).toBe(true);
+    expect(fs.existsSync(other2)).toBe(true);
+    expect(fs.existsSync(other3)).toBe(true);
   });
 });
