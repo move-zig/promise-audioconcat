@@ -46,7 +46,7 @@ const songs = [
 const output = 'combined.mp3';
 
 try {
-  const output = await audioconcat(songs, output);
+  await audioconcat(songs, output);
   console.log(`Audio created in ${output}`);
 } catch (err) {
   console.error('Error:', err);
